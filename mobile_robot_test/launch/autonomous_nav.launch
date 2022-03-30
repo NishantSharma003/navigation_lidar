@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find mobile_robot_test)/launch/controller_check.launch" />  
+  <arg name="map_file" default="$(find mobile_robot_test)/map/test_map.yaml"/>
+  
+  <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0.2 0 0 0 1 base_link laser 100" /> 
+
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" >
+  </node>
+
+  <node name="rviz" pkg="rviz" type="rviz"  args="-d $(find mobile_robot_test)/config/nav_config.rviz"/>
+
+
+  
+  <include file="$(find rplidar_ros)/launch/rplidar.launch" />
+  <include file="$(find mobile_robot_test)/launch/amcl.launch" />
+  <include file="$(find mobile_robot_test)/launch/move_base.launch" /> 
+  <include file="$(find mobile_robot_test)/launch/ultrasonic_test.launch" />
+</launch>

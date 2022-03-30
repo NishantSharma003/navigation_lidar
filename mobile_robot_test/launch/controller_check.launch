@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<launch>
+  <rosparam file="$(find mobile_robot_test)/config/controllers.yaml" command="load"/>
+  <rosparam file="$(find mobile_robot_test)/config/joint_limits.yaml" command="load"/>
+
+  <node pkg="rosserial_python" type="serial_node.py" name="serial_node_1">
+    <param name="port" value="/dev/ttyUSB0"/>
+    <param name="baud" value="57600"/>
+  </node>
+
+  <!--<arg name="model" default="$(find mobile_robot_test)/urdf/mobile_robot.urdf.xacro"/>
+  
+  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+  
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" >
+  </node>-->
+
+  <node name="robot_hardware_interface" pkg="mobile_robot_test" type="mobile_robot_test_hardware_interface" output="screen">
+     <remap from="/mobile_robot/mobile_base_controller/cmd_vel" to="/cmd_vel"/>
+  </node>
+  
+  <node name="subscriber_py" pkg="mobile_robot_test" type="joints_receive_from_arduino.py" output="screen"/>   
+ 
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+        args="
+        	/mobile_robot/joints_update
+            /mobile_robot/mobile_base_controller" >
+  </node>
+  
+
+
+</launch>
